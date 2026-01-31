@@ -1,0 +1,39 @@
+# Notify2u - Google Play Store Listing
+
+## Short Description (Max 80 characters)
+Smart payment reminders & to-do list with a stunning neon vibe and cloud sync.
+
+---
+
+## Full Description (Max 4000 characters)
+
+**Experience the Future of Productivity with Notify2u.**
+
+Tired of forgetting payments or losing track of your daily tasks? Meet **Notify2u**, the ultimate all-in-one assistant designed with a high-fidelity neon aesthetic that makes managing your life feel futuristic and effortless.
+
+### 🚀 Why Choose Notify2u?
+
+Notify2u combines powerful financial tracking with a sleek to-do list, all wrapped in a vibrant, modern UI. Whether you're tracking a debt, a loan, or just your grocery list, Notify2u ensures you stay on top of everything.
+
+### ✨ Key Features:
+
+*   **💎 Stunning Neon UI:** Experience a premium dark-mode interface with vibrant neon pink and electric blue accents. High-fidelity design meets glassmorphism for a truly modern aesthetic.
+*   **💳 Smart Payment Reminders:** Easily track "To Pay" and "To Receive" records. Categorize your finances and never miss a due date again.
+*   **📝 Integrated To-Do List:** A clean, efficient way to manage your daily tasks. Simple, intuitive, and built for speed.
+*   **🔄 Real-Time Cloud Sync:** Your data is safe and always accessible. Sync across multiple devices instantly using secure Google Login and real-time database technology.
+*   **🔔 Intelligent Notifications:** Get timely reminders for your payments and tasks. Use our "Quick Add" notification to add tasks without even opening the app.
+*   **🌐 Offline First:** No internet? No problem. Notify2u stores your data locally first and syncs automatically when you're back online.
+*   **🔐 Secure & Private:** We value your privacy. Your data is protected with industrial-grade encryption and secure authentication.
+
+### 🎯 Who is Notify2u for?
+
+*   **Freelancers:** Track client payments and project deadlines.
+*   **Students:** Stay on top of bills and academic tasks.
+*   **Everyone:** If you value a beautiful, efficient, and reliable way to organize your life, Notify2u is for you.
+
+**Download Notify2u today and bring a spark of neon to your productivity!**
+
+---
+
+## Targeted Keywords
+Payment Reminder, Debt Tracker, To-Do List, Task Manager, Neon UI, Cloud Sync, Finance Tracker, Bill Reminder, Smart Organizer, Jetpack Compose.
