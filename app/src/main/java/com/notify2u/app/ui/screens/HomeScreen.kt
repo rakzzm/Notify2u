@@ -31,6 +31,7 @@ import com.notify2u.app.data.model.PaymentStatus
 import com.notify2u.app.ui.components.IOSCard
 import com.notify2u.app.ui.components.PaymentCard
 import com.notify2u.app.ui.components.ReminderDetailsBottomSheet
+import com.notify2u.app.ui.theme.*
 import com.notify2u.app.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -62,7 +63,7 @@ fun HomeScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = BackgroundDark,
         topBar = {
             Column(
                 modifier = Modifier
@@ -131,7 +132,7 @@ fun HomeScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(56.dp)
                         .background(Brush.linearGradient(listOf(Color(0xFFFF00E5), Color(0xFF00E0FF))), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
