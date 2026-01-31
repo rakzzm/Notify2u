@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.notify2u.app.data.local.Notify2uDatabase
 import com.notify2u.app.navigation.AppNavigation
@@ -63,6 +64,16 @@ class MainActivity : ComponentActivity() {
         val authDao = database.userDao()
         val authFactory = AuthViewModelFactory(authDao)
         val authViewModel = ViewModelProvider(this, authFactory)[AuthViewModel::class.java]
+
+        // 🔄 Start Real-time Cloud Sync when logged in
+        val todoDao = database.todoDao()
+        lifecycleScope.launch {
+            authViewModel.isLoggedIn.collect { loggedIn ->
+                if (loggedIn) {
+                    firestoreRepository.startRealtimeSync(dao, todoDao, lifecycleScope)
+                }
+            }
+        }
 
         var initialTaskTitle = ""
         var openAddSheet = false

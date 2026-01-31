@@ -4,8 +4,14 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.notify2u.app.data.local.PaymentReminderDao
 import com.notify2u.app.data.local.PaymentReminderEntity
+import com.notify2u.app.data.local.Priority
+import com.notify2u.app.data.local.TodoDao
 import com.notify2u.app.data.local.TodoTaskEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class FirestoreRepository {
@@ -85,5 +91,76 @@ class FirestoreRepository {
             .document(taskId.toString())
             .delete()
             .await()
+    }
+
+    fun startRealtimeSync(
+        paymentDao: PaymentReminderDao,
+        todoDao: TodoDao,
+        scope: CoroutineScope
+    ) {
+        val uid = userId ?: return
+
+        // 1. Listen for Payment Reminders
+        firestore.collection("users")
+            .document(uid)
+            .collection("payment_reminders")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+                snapshots?.documents?.forEach { doc ->
+                    val remoteLastUpdated = doc.getLong("lastUpdated") ?: 0L
+                    scope.launch(Dispatchers.IO) {
+                        val local = paymentDao.getAllRemindersOnce().find { it.id == doc.id.toInt() }
+                        if (local == null || remoteLastUpdated > local.lastUpdated) {
+                            val reminder = PaymentReminderEntity(
+                                id = doc.id.toInt(),
+                                name = doc.getString("name") ?: "",
+                                amount = doc.getDouble("amount") ?: 0.0,
+                                dueDate = doc.getString("dueDate") ?: "",
+                                isReceived = doc.getBoolean("isReceived") ?: false,
+                                status = doc.getString("status") ?: "",
+                                personName = doc.getString("personName") ?: "",
+                                month = doc.getString("month") ?: "",
+                                recurringType = doc.getString("recurringType") ?: "None",
+                                note = doc.getString("note") ?: "",
+                                direction = doc.getString("direction") ?: "TO_PAY",
+                                partialAmountPaid = doc.getDouble("partialAmountPaid") ?: 0.0,
+                                partialDueDate = doc.getString("partialDueDate"),
+                                userId = uid,
+                                lastUpdated = remoteLastUpdated
+                            )
+                            paymentDao.insertReminder(reminder)
+                        }
+                    }
+                }
+            }
+
+        // 2. Listen for Todo Tasks
+        firestore.collection("users")
+            .document(uid)
+            .collection("todo_tasks")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+                snapshots?.documents?.forEach { doc ->
+                    val remoteLastUpdated = doc.getLong("lastUpdated") ?: 0L
+                    scope.launch(Dispatchers.IO) {
+                        val local = todoDao.getTaskById(doc.id.toInt())
+                        if (local == null || remoteLastUpdated > local.lastUpdated) {
+                            val task = TodoTaskEntity(
+                                id = doc.id.toInt(),
+                                title = doc.getString("title") ?: "",
+                                description = doc.getString("description") ?: "",
+                                isCompleted = doc.getBoolean("isCompleted") ?: false,
+                                dueDate = doc.getString("dueDate"),
+                                priority = Priority.valueOf(doc.getString("priority") ?: "MEDIUM"),
+                                category = doc.getString("category") ?: "General",
+                                colorHex = doc.getString("colorHex") ?: "#FF6200EE",
+                                userId = uid,
+                                lastUpdated = remoteLastUpdated
+                            )
+                            todoDao.insertTask(task)
+                        }
+                    }
+                }
+            }
     }
 }
