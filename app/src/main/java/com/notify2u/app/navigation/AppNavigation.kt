@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,10 +19,9 @@ import com.notify2u.app.ui.screens.TodoListScreen
 import com.notify2u.app.ui.screens.CalendarScreen
 import com.notify2u.app.ui.screens.SupportScreen
 import com.notify2u.app.ui.screens.LoginScreen
+import com.notify2u.app.ui.screens.SignUpScreen
 import com.notify2u.app.ui.screens.ProfileScreen
-import com.notify2u.app.ui.viewmodel.HomeViewModel
 import com.notify2u.app.ui.viewmodel.AuthViewModel
-import com.notify2u.app.ui.viewmodel.AuthViewModelFactory
 import com.notify2u.app.ui.viewmodel.HomeViewModel
 import com.notify2u.app.ui.viewmodel.TodoViewModel
 import com.notify2u.app.ui.viewmodel.TodoViewModelFactory
@@ -55,7 +55,7 @@ fun AppNavigation(
     Scaffold(
         bottomBar = {
             NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
                 tonalElevation = 8.dp
             ) {
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -81,7 +81,14 @@ fun AppNavigation(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color(0xFF00E0FF),
+                            selectedTextColor = Color(0xFF00E0FF),
+                            unselectedIconColor = Color.White.copy(alpha = 0.5f),
+                            unselectedTextColor = Color.White.copy(alpha = 0.5f),
+                            indicatorColor = Color.White.copy(alpha = 0.1f)
+                        )
                     )
                 }
             }
@@ -99,6 +106,23 @@ fun AppNavigation(
                         navController.navigate("home/ALL") {
                             popUpTo("login") { inclusive = true }
                         }
+                    },
+                    onSignUpClick = {
+                        navController.navigate("signup")
+                    }
+                )
+            }
+
+            composable("signup") {
+                SignUpScreen(
+                    viewModel = authViewModel,
+                    onSignUpSuccess = {
+                        navController.navigate("home/ALL") {
+                            popUpTo("signup") { inclusive = true }
+                        }
+                    },
+                    onBackToLogin = {
+                        navController.popBackStack()
                     }
                 )
             }

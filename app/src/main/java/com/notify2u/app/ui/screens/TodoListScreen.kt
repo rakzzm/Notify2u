@@ -1,4 +1,5 @@
 package com.notify2u.app.ui.screens
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.graphics.Brush
 import com.notify2u.app.data.local.TodoTaskEntity
 import com.notify2u.app.data.local.Priority
 import com.notify2u.app.ui.components.AddTodoBottomSheet
@@ -40,6 +43,7 @@ fun TodoListScreen(
     val filteredTasks = if (categories[selectedTabIndex] == "ALL") tasks else tasks.filter { it.category.uppercase() == categories[selectedTabIndex] }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(
                 modifier = Modifier
@@ -48,7 +52,7 @@ fun TodoListScreen(
             ) {
                 Text(
                     text = "To-Do List",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineLarge.copy(color = Color.White),
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
                 
@@ -76,11 +80,11 @@ fun TodoListScreen(
                             shape = CircleShape,
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                selectedLabelColor = Color.White,
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                labelColor = Color.White.copy(alpha = 0.7f)
                             ),
-                            border = null
+                            border = if (isSelected) FilterChipDefaults.filterChipBorder(enabled = true, selected = true, borderColor = Color.White.copy(alpha = 0.5f)) else null
                         )
                     }
                 }
@@ -92,8 +96,9 @@ fun TodoListScreen(
                 tonalElevation = 8.dp,
                 shadowElevation = 16.dp,
                 modifier = Modifier.imePadding(),
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
             ) {
                 Row(
                     modifier = Modifier
@@ -104,13 +109,16 @@ fun TodoListScreen(
                     TextField(
                         value = quickAddTaskText,
                         onValueChange = { quickAddTaskText = it },
-                        placeholder = { Text("Add a new task...") },
+                        placeholder = { Text("Add a new task...", color = Color.White.copy(alpha = 0.5f)) },
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = Color.White
                         ),
                         singleLine = true
                     )
@@ -122,10 +130,12 @@ fun TodoListScreen(
                             }
                         },
                         colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White
                         ),
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(Brush.linearGradient(listOf(Color(0xFFFF00E5), Color(0xFF00E0FF))), CircleShape)
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Add")
                     }
@@ -161,12 +171,19 @@ fun ScrollableRow(
 
 @Composable
 fun TaskItem(task: TodoTaskEntity, viewModel: TodoViewModel) {
+    val neonColor = if (task.isCompleted) Color(0xFF00E0FF) else Color(0xFFFF00E5)
+    
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 4.dp),
+            .padding(horizontal = 20.dp, vertical = 4.dp)
+            .border(
+                1.dp, 
+                if (task.isCompleted) Color.White.copy(alpha = 0.1f) else neonColor.copy(alpha = 0.4f), 
+                RoundedCornerShape(20.dp)
+            ),
         onClick = { viewModel.toggleTaskCompletion(task) },
-        color = if (task.isCompleted) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surface,
+        color = if (task.isCompleted) Color.White.copy(alpha = 0.02f) else Color.White.copy(alpha = 0.05f),
         shape = RoundedCornerShape(20.dp)
     ) {
         Row(
@@ -181,11 +198,11 @@ fun TaskItem(task: TodoTaskEntity, viewModel: TodoViewModel) {
                     .size(28.dp)
                     .border(
                         2.dp, 
-                        if (task.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                        if (task.isCompleted) Color(0xFF00E0FF) else Color.White.copy(alpha = 0.3f),
                         CircleShape
                     )
                     .background(
-                        if (task.isCompleted) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        if (task.isCompleted) Color(0xFF00E0FF) else Color.Transparent,
                         CircleShape
                     )
                     .clickable { viewModel.toggleTaskCompletion(task) },
@@ -196,7 +213,7 @@ fun TaskItem(task: TodoTaskEntity, viewModel: TodoViewModel) {
                         Icons.Default.Check,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = Color.White
                     )
                 }
             }
@@ -206,29 +223,32 @@ fun TaskItem(task: TodoTaskEntity, viewModel: TodoViewModel) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = task.title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
                     textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null,
-                    color = if (task.isCompleted) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
+                    color = if (task.isCompleted) Color.White.copy(alpha = 0.4f) else Color.White
                 )
                 if (task.description.isNotBlank()) {
                     Text(
                         text = task.description,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = Color.White.copy(alpha = 0.6f),
                         maxLines = 2
                     )
                 }
                 if (task.priority == Priority.HIGH) {
                     Spacer(Modifier.height(4.dp))
                     Surface(
-                        color = MaterialTheme.colorScheme.errorContainer,
+                        color = Color(0xFFFF4848).copy(alpha = 0.15f),
                         shape = CircleShape,
+                        border = BorderStroke(1.dp, Color(0xFFFF4848).copy(alpha = 0.5f))
                     ) {
                         Text(
-                            "Priority",
+                            "High Priority",
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onErrorContainer
+                            color = Color(0xFFFF4848)
                         )
                     }
                 }

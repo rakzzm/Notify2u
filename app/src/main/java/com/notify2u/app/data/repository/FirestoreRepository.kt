@@ -1,9 +1,9 @@
 package com.notify2u.app.data.repository
 
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
 import com.notify2u.app.data.local.PaymentReminderDao
 import com.notify2u.app.data.local.PaymentReminderEntity
 import com.notify2u.app.data.local.Priority

@@ -3,6 +3,8 @@ package com.notify2u.app.ui.screens
 import android.app.DatePickerDialog
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -13,7 +15,10 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +62,7 @@ fun HomeScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(
                 modifier = Modifier
@@ -65,13 +71,13 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "Notify2u",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineLarge.copy(color = Color.White),
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
                 
                 Spacer(Modifier.height(16.dp))
                 
-                // Segmented Control (Simple implementation using Row)
+                // Segmented Control
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -96,12 +102,15 @@ fun HomeScreen(
                             },
                             shape = shape,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                                contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                                contentColor = Color.White
                             ),
                             modifier = Modifier
                                 .weight(1f)
-                                .height(40.dp),
+                                .height(40.dp)
+                                .then(
+                                    if (isSelected) Modifier.border(1.dp, Color.White.copy(alpha = 0.5f), shape) else Modifier
+                                ),
                             contentPadding = PaddingValues(0.dp)
                         ) {
                             Text(labels[index], style = MaterialTheme.typography.labelMedium)
@@ -116,10 +125,18 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = { showSheet = true },
                 shape = MaterialTheme.shapes.extraLarge,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = Color.Transparent,
+                contentColor = Color.White,
+                modifier = Modifier.border(2.dp, Brush.linearGradient(listOf(Color(0xFFFF00E5), Color(0xFF00E0FF))), CircleShape)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Reminder")
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Brush.linearGradient(listOf(Color(0xFFFF00E5), Color(0xFF00E0FF))), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Reminder")
+                }
             }
         }
     ) { innerPadding ->

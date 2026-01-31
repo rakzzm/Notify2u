@@ -1,10 +1,17 @@
 package com.notify2u.app.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,15 +32,13 @@ fun PaymentCard(
     val today = LocalDate.now()
     val daysLeft = ChronoUnit.DAYS.between(today, dueDate)
 
-    val defaultColor = when {
-        !reminder.isReceived && daysLeft < 0 -> Color(0xFFB71C1C)
-        !reminder.isReceived && daysLeft == 0L -> Color(0xFFE53935)
-        !reminder.isReceived && daysLeft in 1..3 -> Color(0xFFFB8C00)
-        !reminder.isReceived -> Color(0xFF43A047)
-        else -> Color(0xFFBDBDBD)
+    val neonColor = when {
+        !reminder.isReceived && daysLeft < 0 -> Color(0xFFFF4848) // Neon Red/Pink
+        !reminder.isReceived && daysLeft == 0L -> Color(0xFFFF00E5) // Neon Pink
+        !reminder.isReceived && daysLeft in 1..3 -> Color(0xFFFF8C00) // Neon Orange
+        !reminder.isReceived -> Color(0xFF00E0FF) // Neon Blue
+        else -> Color(0xFFB0B0B0)
     }
-
-    val actualColor = cardColor ?: defaultColor
 
     val paymentDirection = when (reminder.direction) {
         "TO_PAY" -> "To Pay"
@@ -41,35 +46,53 @@ fun PaymentCard(
         else -> ""
     }
 
-    IOSCard(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .border(1.dp, neonColor.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
             .clickable { onClick(reminder) },
-        backgroundColor = actualColor,
-        elevation = 4.dp
+        color = Color.White.copy(alpha = 0.05f),
+        tonalElevation = 4.dp
     ) {
-        Column {
-            Text(
-                text = reminder.name,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
-            )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = reminder.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                // Status Glow
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .background(neonColor, CircleShape)
+                        .border(2.dp, neonColor.copy(alpha = 0.3f), CircleShape)
+                )
+            }
 
             extraLabel?.let {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = it, 
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White.copy(alpha = 0.7f)
                 )
             }
 
             Spacer(Modifier.height(12.dp))
             Text(
                 text = "₹${reminder.amount}",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    brush = Brush.linearGradient(listOf(Color(0xFFFF00E5), Color(0xFF00E0FF)))
+                ),
+                color = Color.White
             )
 
             Spacer(Modifier.height(8.dp))
@@ -96,9 +119,9 @@ fun PaymentCard(
                 text = statusText,
                 style = MaterialTheme.typography.bodyLarge,
                 color = if (dueDate.isBefore(today) && !reminder.isReceived) 
-                    MaterialTheme.colorScheme.error 
+                    Color(0xFFFF4848) 
                 else 
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    Color.White.copy(alpha = 0.6f)
             )
 
             Spacer(Modifier.height(8.dp))
@@ -109,12 +132,12 @@ fun PaymentCard(
                 Text(
                     text = "Repeat: ${reminder.recurringType}",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White.copy(alpha = 0.5f)
                 )
                 Text(
                     text = paymentDirection,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White.copy(alpha = 0.5f)
                 )
             }
 
@@ -123,7 +146,7 @@ fun PaymentCard(
                 Text(
                     text = reminder.note,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color.White.copy(alpha = 0.4f),
                     maxLines = 1
                 )
             }

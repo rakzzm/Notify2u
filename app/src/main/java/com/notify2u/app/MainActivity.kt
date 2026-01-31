@@ -9,6 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.google.firebase.auth.auth
+import com.google.firebase.Firebase
 import androidx.navigation.compose.rememberNavController
 import com.notify2u.app.data.local.Notify2uDatabase
 import com.notify2u.app.navigation.AppNavigation

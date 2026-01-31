@@ -7,11 +7,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
 import com.notify2u.app.data.local.PaymentReminderEntity
+import com.notify2u.app.ui.theme.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -99,37 +108,69 @@ fun ReminderDetailsBottomSheet(
     }
 
     // Bottom sheet UI
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = BackgroundDark.copy(alpha = 0.95f),
+        tonalElevation = 8.dp,
+        dragHandle = { BottomSheetDefaults.DragHandle(color = Color.White.copy(alpha = 0.3f)) }
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Edit Reminder", style = MaterialTheme.typography.titleLarge)
+            Text("Edit Reminder", style = MaterialTheme.typography.titleLarge, color = Color.White)
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Name", color = Color.White.copy(alpha = 0.7f)) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = NeonPink,
+                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f),
+                    cursorColor = Color.White
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
                 value = amount,
                 onValueChange = { amount = it },
-                label = { Text("Amount") },
+                label = { Text("Amount", color = Color.White.copy(alpha = 0.7f)) },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = NeonBlue,
+                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f),
+                    cursorColor = Color.White
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
                 value = dueDate.format(formatter),
                 onValueChange = {},
-                label = { Text("Due Date") },
+                label = { Text("Due Date", color = Color.White.copy(alpha = 0.7f)) },
                 readOnly = true,
-                enabled = false,
+                enabled = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { showDatePickerForDueDate = true }
+                    .clickable { showDatePickerForDueDate = true },
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.White.copy(alpha = 0.5f),
+                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f),
+                    cursorColor = Color.White
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -142,17 +183,26 @@ fun ReminderDetailsBottomSheet(
                     readOnly = true,
                     value = recurringType,
                     onValueChange = {},
-                    label = { Text("Repeat") },
+                    label = { Text("Repeat", color = Color.White.copy(alpha = 0.7f)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedRepeat.value) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.White.copy(alpha = 0.5f),
+                        unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f)
+                    )
                 )
                 ExposedDropdownMenu(
                     expanded = expandedRepeat.value,
-                    onDismissRequest = { expandedRepeat.value = false }
+                    onDismissRequest = { expandedRepeat.value = false },
+                    modifier = Modifier.background(BackgroundDark)
                 ) {
                     listOf("None", "Daily", "Weekly", "Monthly").forEach { type ->
                         DropdownMenuItem(
-                            text = { Text(type) },
+                            text = { Text(type, color = Color.White) },
                             onClick = {
                                 recurringType = type
                                 expandedRepeat.value = false
@@ -172,17 +222,26 @@ fun ReminderDetailsBottomSheet(
                     readOnly = true,
                     value = if (direction == "TO_PAY") "To Pay" else "To Receive",
                     onValueChange = {},
-                    label = { Text("Direction") },
+                    label = { Text("Direction", color = Color.White.copy(alpha = 0.7f)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedDirection.value) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.White.copy(alpha = 0.5f),
+                        unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f)
+                    )
                 )
                 ExposedDropdownMenu(
                     expanded = expandedDirection.value,
-                    onDismissRequest = { expandedDirection.value = false }
+                    onDismissRequest = { expandedDirection.value = false },
+                    modifier = Modifier.background(BackgroundDark)
                 ) {
                     listOf("TO_PAY", "TO_RECEIVE").forEach { dir ->
                         DropdownMenuItem(
-                            text = { Text(if (dir == "TO_PAY") "To Pay" else "To Receive") },
+                            text = { Text(if (dir == "TO_PAY") "To Pay" else "To Receive", color = Color.White) },
                             onClick = {
                                 direction = dir
                                 expandedDirection.value = false
@@ -196,12 +255,21 @@ fun ReminderDetailsBottomSheet(
             OutlinedTextField(
                 value = note,
                 onValueChange = { note = it },
-                label = { Text("Note") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Note", color = Color.White.copy(alpha = 0.7f)) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.White.copy(alpha = 0.5f),
+                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f),
+                    cursorColor = Color.White
+                )
             )
 
             if (isNoteModified || isInfoModified) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
                         val updated = reminder.copy(
@@ -216,9 +284,19 @@ fun ReminderDetailsBottomSheet(
                         onEditReminder(updated)
                         onDismiss()
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    contentPadding = PaddingValues(0.dp)
                 ) {
-                    Text("Save Changes")
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Brush.horizontalGradient(listOf(NeonPink, NeonBlue))),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Save Changes", fontWeight = FontWeight.Bold, color = Color.White)
+                    }
                 }
             }
 
@@ -226,17 +304,23 @@ fun ReminderDetailsBottomSheet(
             if (!reminder.isReceived) {
                 Button(
                     onClick = { showDatePickerForPaidDate = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = NeonBlue.copy(alpha = 0.2f)),
+                    border = BorderStroke(1.dp, NeonBlue.copy(alpha = 0.5f))
                 ) {
-                    Text("Mark as Paid")
+                    Text("Mark as Paid", color = NeonBlue, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
                 Button(
                     onClick = { showPartialPaymentDialog = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = NeonPink.copy(alpha = 0.2f)),
+                    border = BorderStroke(1.dp, NeonPink.copy(alpha = 0.5f))
                 ) {
-                    Text("Mark as Partially Paid")
+                    Text("Mark as Partially Paid", color = NeonPink, fontWeight = FontWeight.Bold)
                 }
             } else {
                 Button(
@@ -249,9 +333,11 @@ fun ReminderDetailsBottomSheet(
                         onNoteChange(updated)
                         onDismiss()
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f))
                 ) {
-                    Text("Mark as Unpaid")
+                    Text("Mark as Unpaid", color = Color.White)
                 }
             }
 
@@ -261,12 +347,14 @@ fun ReminderDetailsBottomSheet(
                     onDelete(reminder)
                     onDismiss()
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error
-                )
+                    contentColor = Color(0xFFFF4848)
+                ),
+                border = BorderStroke(1.dp, Color(0xFFFF4848).copy(alpha = 0.5f))
             ) {
-                Text("Delete")
+                Text("Delete", fontWeight = FontWeight.Bold)
             }
         }
     }
