@@ -16,8 +16,8 @@ datastore = "1.0.0"
 ksp = "2.0.21-1.0.25"
 glance = "1.1.1"
 biometric = "1.2.0-alpha05"
-firebaseBom = "33.5.1"
-googleServices = "4.4.2"
+firebaseBom = "34.8.0"
+googleServices = "4.4.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +50,7 @@ androidx-biometric = { group = "androidx.biometric", name = "biometric", version
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
