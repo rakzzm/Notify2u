@@ -9,5 +9,6 @@ data class UserEntity(
     val email: String,
     val displayName: String?,
     val photoUrl: String?,
+    val role: String = "USER",
     val lastSyncTimestamp: Long = System.currentTimeMillis()
 )

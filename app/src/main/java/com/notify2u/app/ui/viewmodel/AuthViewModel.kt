@@ -26,13 +26,14 @@ class AuthViewModel(private val userDao: UserDao) : ViewModel() {
         }
     }
 
-    fun login(email: String, displayName: String) {
+    fun login(email: String, displayName: String, role: String = "USER") {
         viewModelScope.launch {
             val user = UserEntity(
                 id = "mock_id_${System.currentTimeMillis()}",
                 email = email,
                 displayName = displayName,
-                photoUrl = null
+                photoUrl = null,
+                role = role
             )
             userDao.insertUser(user)
         }
