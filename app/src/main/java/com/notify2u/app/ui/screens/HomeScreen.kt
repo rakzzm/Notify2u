@@ -108,8 +108,8 @@ fun HomeScreen(
                             },
                             shape = shape,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-                                contentColor = Color.White
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.White,
+                                contentColor = Color.Black
                             ),
                             modifier = Modifier
                                 .weight(1f)
