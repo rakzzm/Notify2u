@@ -21,6 +21,7 @@ import com.notify2u.app.ui.screens.SupportScreen
 import com.notify2u.app.ui.screens.LoginScreen
 import com.notify2u.app.ui.screens.SignUpScreen
 import com.notify2u.app.ui.screens.ProfileScreen
+import com.notify2u.app.ui.screens.AddReminderScreen
 import com.notify2u.app.ui.viewmodel.AuthViewModel
 import com.notify2u.app.ui.viewmodel.HomeViewModel
 import com.notify2u.app.ui.viewmodel.TodoViewModel
@@ -133,7 +134,15 @@ fun AppNavigation(
                     viewModel = viewModel,
                     navController = navController,
                     filterType = filterType,
-                    openAddSheet = openAddSheet,
+                    showAddScreen = openAddSheet,
+                    initialName = initialTaskTitle
+                )
+            }
+
+            composable("add_reminder") {
+                AddReminderScreen(
+                    viewModel = viewModel,
+                    navController = navController,
                     initialName = initialTaskTitle
                 )
             }

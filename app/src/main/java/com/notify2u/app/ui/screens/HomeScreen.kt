@@ -45,13 +45,12 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     navController: NavController,
     filterType: String = "ALL",
-    openAddSheet: Boolean = false,
+    showAddScreen: Boolean = false,
     initialName: String = ""
 ) {
     val reminders by viewModel.reminders.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    var showSheet by rememberSaveable { mutableStateOf(openAddSheet) }
     var selectedReminder by remember { mutableStateOf<PaymentReminderEntity?>(null) }
     val gridState = rememberLazyGridState()
     val context = LocalContext.current
@@ -60,6 +59,12 @@ fun HomeScreen(
         "TO_PAY" -> reminders.filter { !it.isReceived && it.amount > 0 }
         "TO_RECEIVE" -> reminders.filter { !it.isReceived && it.amount < 0 }
         else -> reminders.filter { !it.isReceived }
+    }
+
+    LaunchedEffect(showAddScreen) {
+        if (showAddScreen) {
+            navController.navigate("add_reminder")
+        }
     }
 
     Scaffold(
@@ -124,7 +129,7 @@ fun HomeScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showSheet = true },
+                onClick = { navController.navigate("add_reminder") },
                 shape = MaterialTheme.shapes.extraLarge,
                 containerColor = Color.Transparent,
                 contentColor = Color.White,
@@ -170,166 +175,6 @@ fun HomeScreen(
                 }
             }
         }
-    }
-
-    if (showSheet) {
-        var name by remember { mutableStateOf(initialName) }
-        var amount by remember { mutableStateOf("") }
-        var date by remember { mutableStateOf(LocalDate.now()) }
-        var recurrence by remember { mutableStateOf("None") }
-        var direction by remember { mutableStateOf("TO_RECEIVE") }
-
-        val recurrenceOptions = listOf("None", "Daily", "Weekly", "Monthly")
-        val directions = mapOf("TO_PAY" to "To Pay", "TO_RECEIVE" to "To Receive")
-
-        val isValid = name.isNotBlank() && (amount.toDoubleOrNull() ?: 0.0) != 0.0
-
-        ModalBottomSheet(onDismissRequest = { showSheet = false }) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("Add Reminder", style = MaterialTheme.typography.titleLarge)
-
-                Spacer(Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Name") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = amount,
-                    onValueChange = { amount = it },
-                    label = { Text("Amount") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
-
-                Spacer(Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = date.format(DateTimeFormatter.ofPattern("dd MMM yyyy")),
-                    onValueChange = {},
-                    label = { Text("Due Date") },
-                    readOnly = true,
-                    enabled = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            val today = Calendar.getInstance()
-                            DatePickerDialog(
-                                context,
-                                { _, y, m, d ->
-                                    date = LocalDate.of(y, m + 1, d)
-                                },
-                                today.get(Calendar.YEAR),
-                                today.get(Calendar.MONTH),
-                                today.get(Calendar.DAY_OF_MONTH)
-                            ).show()
-                        }
-                )
-
-                Spacer(Modifier.height(12.dp))
-                var recurrenceExpanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = recurrenceExpanded,
-                    onExpandedChange = { recurrenceExpanded = !recurrenceExpanded }
-                ) {
-                    OutlinedTextField(
-                        value = recurrence,
-                        onValueChange = {},
-                        label = { Text("Recurring") },
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(recurrenceExpanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = recurrenceExpanded,
-                        onDismissRequest = { recurrenceExpanded = false }
-                    ) {
-                        recurrenceOptions.forEach {
-                            DropdownMenuItem(
-                                text = { Text(it) },
-                                onClick = {
-                                    recurrence = it
-                                    recurrenceExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Spacer(Modifier.height(12.dp))
-                var typeExpanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = typeExpanded,
-                    onExpandedChange = { typeExpanded = !typeExpanded }
-                ) {
-                    OutlinedTextField(
-                        value = directions[direction] ?: "To Pay",
-                        onValueChange = {},
-                        label = { Text("Payment Type") },
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(typeExpanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = typeExpanded,
-                        onDismissRequest = { typeExpanded = false }
-                    ) {
-                        directions.forEach { (internal, display) ->
-                            DropdownMenuItem(
-                                text = { Text(display) },
-                                onClick = {
-                                    direction = internal
-                                    typeExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Spacer(Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        val amt = amount.toDoubleOrNull() ?: 0.0
-                        val signedAmount = if (direction == "TO_RECEIVE") -amt else amt
-
-                        val reminder = PaymentReminderEntity(
-                            name = name,
-                            amount = signedAmount,
-                            dueDate = date.toString(),
-                            isReceived = false,
-                            status = PaymentStatus.FUTURE.name,
-                            personName = name.trim(),
-                            month = "${date.month.name} ${date.year}",
-                            recurringType = recurrence,
-                            note = "",
-                            direction = direction
-                        )
-
-                        showSheet = false
-                        coroutineScope.launch {
-                            val inserted = viewModel.addReminderAndReturn(reminder)
-                            gridState.scrollToItem(0)
-                            val result = snackbarHostState.showSnackbar(
-                                message = "Reminder added",
-                                actionLabel = "UNDO",
-                                duration = SnackbarDuration.Short
-                            )
-                            if (result == SnackbarResult.ActionPerformed) {
-                                viewModel.deleteReminder(inserted)
-                            }
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = isValid
-                ) {
-                    Text("Add")
-                }
-            }
-        }
-    }
 
     selectedReminder?.let { reminder ->
         ReminderDetailsBottomSheet(
@@ -355,5 +200,6 @@ fun HomeScreen(
             },
             onNoteChange = { viewModel.updateReminder(it) }
         )
+    }
     }
 }
