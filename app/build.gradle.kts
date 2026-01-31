@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -58,6 +59,7 @@ dependencies {
     implementation(libs.androidx.biometric)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     // LiveData support (for state handling)
     implementation(libs.androidx.compose.runtime.livedata)

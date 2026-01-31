@@ -11,7 +11,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class HomeViewModel(private val dao: PaymentReminderDao) : ViewModel() {
+import com.notify2u.app.data.repository.FirestoreRepository
+import java.time.LocalDate
+
+class HomeViewModel(
+    private val dao: PaymentReminderDao,
+    private val firestoreRepository: FirestoreRepository
+) : ViewModel() {
 
     // Flow for all reminders
     val reminders = dao.getAllReminders()
@@ -25,24 +31,29 @@ class HomeViewModel(private val dao: PaymentReminderDao) : ViewModel() {
 
     fun addReminder(reminder: PaymentReminderEntity) {
         viewModelScope.launch {
-            dao.insertReminder(reminder.copy(id = 0))
+            val insertedId = dao.insertReminder(reminder.copy(id = 0))
+            firestoreRepository.syncPaymentReminder(reminder.copy(id = insertedId.toInt()))
         }
     }
 
     suspend fun addReminderAndReturn(reminder: PaymentReminderEntity): PaymentReminderEntity {
         val insertedId: Long = dao.insertReminder(reminder.copy(id = 0))
-        return reminder.copy(id = insertedId.toInt())
+        val newReminder = reminder.copy(id = insertedId.toInt())
+        firestoreRepository.syncPaymentReminder(newReminder)
+        return newReminder
     }
 
     fun updateReminder(reminder: PaymentReminderEntity) {
         viewModelScope.launch {
             dao.updateReminder(reminder)
+            firestoreRepository.syncPaymentReminder(reminder)
         }
     }
 
     fun deleteReminder(reminder: PaymentReminderEntity) {
         viewModelScope.launch {
             dao.deleteReminder(reminder)
+            firestoreRepository.deletePaymentReminder(reminder.id)
         }
     }
 
@@ -74,7 +85,9 @@ class HomeViewModel(private val dao: PaymentReminderDao) : ViewModel() {
                 direction = reminder.direction // ✅ PRESERVE TO_PAY or TO_RECEIVE
             )
 
-            dao.insertReminder(newReminder)
+            val insertedId = dao.insertReminder(newReminder)
+            firestoreRepository.syncPaymentReminder(updated)
+            firestoreRepository.syncPaymentReminder(newReminder.copy(id = insertedId.toInt()))
         }
     }
 

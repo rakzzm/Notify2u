@@ -15,7 +15,9 @@ data class TodoTaskEntity(
     val colorHex: String = "#FF6200EE", // Default brand color
     val tag: String? = null,
     val subtasks: String = "", // Comma-separated or newline-separated
-    val tags: String = "" // Space-separated
+    val tags: String = "", // Space-separated
+    val userId: String? = null,
+    val lastUpdated: Long = System.currentTimeMillis()
 )
 
 enum class Priority {

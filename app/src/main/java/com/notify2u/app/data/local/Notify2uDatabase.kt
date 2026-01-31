@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
         CategoryEntity::class,
         UserEntity::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class Notify2uDatabase : RoomDatabase() {

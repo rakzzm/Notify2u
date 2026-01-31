@@ -16,6 +16,7 @@ import com.notify2u.app.ui.viewmodel.HomeViewModel
 import com.notify2u.app.ui.viewmodel.HomeViewModelFactory
 import com.notify2u.app.ui.viewmodel.AuthViewModel
 import com.notify2u.app.ui.viewmodel.AuthViewModelFactory
+import com.notify2u.app.data.repository.FirestoreRepository
 import com.notify2u.app.utils.createNotificationChannel
 import com.notify2u.app.utils.showPersistentQuickAddNotification
 
@@ -54,8 +55,9 @@ class MainActivity : ComponentActivity() {
 
         // ⚙️ Initialize Room + ViewModel
         val database = Notify2uDatabase.getInstance(applicationContext)
+        val firestoreRepository = FirestoreRepository()
         val dao = database.paymentReminderDao()
-        val factory = HomeViewModelFactory(dao)
+        val factory = HomeViewModelFactory(dao, firestoreRepository)
         val viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
         val authDao = database.userDao()
@@ -83,6 +85,7 @@ class MainActivity : ComponentActivity() {
                 AppNavigation(
                     viewModel = viewModel, 
                     authViewModel = authViewModel,
+                    firestoreRepository = firestoreRepository,
                     navController = navController,
                     initialTaskTitle = initialTaskTitle,
                     openAddSheet = openAddSheet

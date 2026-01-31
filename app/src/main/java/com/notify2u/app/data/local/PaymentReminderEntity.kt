@@ -25,5 +25,8 @@ data class PaymentReminderEntity(
     val partialAmountPaid: Double = 0.0,
 
     @ColumnInfo(name = "partialDueDate")
-    val partialDueDate: String? = null
+    val partialDueDate: String? = null,
+
+    val userId: String? = null,
+    val lastUpdated: Long = System.currentTimeMillis()
 )

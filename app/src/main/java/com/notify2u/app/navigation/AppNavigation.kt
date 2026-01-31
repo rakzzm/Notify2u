@@ -26,6 +26,7 @@ import com.notify2u.app.ui.viewmodel.HomeViewModel
 import com.notify2u.app.ui.viewmodel.TodoViewModel
 import com.notify2u.app.ui.viewmodel.TodoViewModelFactory
 import com.notify2u.app.data.local.Notify2uDatabase
+import com.notify2u.app.data.repository.FirestoreRepository
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
@@ -34,6 +35,7 @@ import kotlinx.coroutines.launch
 fun AppNavigation(
     viewModel: HomeViewModel,
     authViewModel: AuthViewModel,
+    firestoreRepository: FirestoreRepository,
     navController: NavHostController,
     initialTaskTitle: String = "",
     openAddSheet: Boolean = false
@@ -128,7 +130,7 @@ fun AppNavigation(
             composable("todo_list") {
                 val todoDao = Notify2uDatabase.getInstance(LocalContext.current).todoDao()
                 val todoViewModel: TodoViewModel = viewModel(
-                    factory = TodoViewModelFactory(todoDao)
+                    factory = TodoViewModelFactory(todoDao, firestoreRepository)
                 )
                 TodoListScreen(
                     viewModel = todoViewModel
@@ -138,7 +140,7 @@ fun AppNavigation(
             composable("calendar") {
                 val todoDao = com.notify2u.app.data.local.Notify2uDatabase.getInstance(androidx.compose.ui.platform.LocalContext.current).todoDao()
                 val todoViewModel: com.notify2u.app.ui.viewmodel.TodoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-                    factory = com.notify2u.app.ui.viewmodel.TodoViewModelFactory(todoDao)
+                    factory = com.notify2u.app.ui.viewmodel.TodoViewModelFactory(todoDao, firestoreRepository)
                 )
                 com.notify2u.app.ui.screens.CalendarScreen(
                     homeViewModel = viewModel,

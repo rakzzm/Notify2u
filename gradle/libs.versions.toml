@@ -17,6 +17,7 @@ ksp = "2.0.21-1.0.25"
 glance = "1.1.1"
 biometric = "1.2.0-alpha05"
 firebaseBom = "33.5.1"
+googleServices = "4.4.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,9 +49,11 @@ androidx-glance-material3 = { group = "androidx.glance", name = "glance-material
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
