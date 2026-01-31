@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 import com.notify2u.app.data.repository.FirestoreRepository
-import java.time.LocalDate
 
 class HomeViewModel(
     private val dao: PaymentReminderDao,

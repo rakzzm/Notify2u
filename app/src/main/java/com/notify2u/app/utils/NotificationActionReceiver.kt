@@ -22,13 +22,20 @@ class NotificationActionReceiver : BroadcastReceiver() {
         notificationManager.cancel(reminderId)
 
         val dao = Notify2uDatabase.getInstance(context).paymentReminderDao()
+        val firestoreRepository = com.notify2u.app.data.repository.FirestoreRepository()
 
         when (action) {
             "ACTION_MARK_DONE" -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     val reminder = dao.getAllRemindersOnce().find { it.id == reminderId }
                     reminder?.let {
-                        dao.updateReminder(it.copy(isReceived = true, paidDate = LocalDate.now().toString()))
+                        val updated = it.copy(
+                            isReceived = true, 
+                            paidDate = LocalDate.now().toString(),
+                            lastUpdated = System.currentTimeMillis()
+                        )
+                        dao.updateReminder(updated)
+                        firestoreRepository.syncPaymentReminder(updated)
                     }
                 }
             }

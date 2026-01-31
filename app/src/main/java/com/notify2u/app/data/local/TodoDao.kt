@@ -12,7 +12,7 @@ interface TodoDao {
     suspend fun getTaskById(id: Int): TodoTaskEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(task: TodoTaskEntity)
+    suspend fun insertTask(task: TodoTaskEntity): Long
 
     @Update
     suspend fun updateTask(task: TodoTaskEntity)
