@@ -4,65 +4,50 @@ Notify2u is a modern Android application developed using Jetpack Compose, design
 
 ---
 
-## Features
+## ✨ Key Features
 
-### 1. Add, Edit, and Delete Reminders
+### 🎨 Premium Neon UI Overhaul
 
-- Create reminders with essential details: name, amount, due date, and type (To Pay / To Receive)
-- Modify or delete reminders at any time
-- Undo support via snackbar for accidental actions
+- **High-Fidelity Aesthetic**: Vibrant fluorescent pink and blue gradient theme.
+- **Glassmorphism**: Elegant semi-transparent surfaces with soft glows and clean borders.
+- **Adaptive Theme**: Optimized for deep space dark mode for maximum visual impact.
 
-### 2. Recurring Reminders
+### 🔄 Real-time Cloud Synchronization
 
-- Supports recurring intervals: None, Daily, Weekly, and Monthly
-- Automatically generates the next instance of a reminder upon marking it as "Received"
+- **Bidirectional Sync**: Seamlessly syncs data between local Room database and Cloud Firestore.
+- **Offline Support**: Automatically pushes updates when the connection is restored.
+- **Conflict Resolution**: Smart timestamp-based logic to prioritize the latest data.
 
-### 3. Color-Coded Grid UI
+### 🔐 Multi-Layer Authentication
 
-- Red cards: Payments due within 3 days
-- Orange cards: Payments due within 2 weeks
-- Green cards: Payments due beyond 2 weeks
-- Uses a responsive `LazyVerticalGrid` layout for better organization
+- **Firebase Auth**: Secure backend authentication for cloud data isolation.
+- **Biometric Security**: Fingerprint/Face ID integration for local app access.
+- **Custom Auth Flow**: Premium redesigned Login and SignUp screens with neon aesthetics.
 
-### 4. Navigation Drawer with Filtered Views
+### 📅 Advanced Reminder Management
 
-- Toggle between different reminder types:
-  - All Reminders
-  - To Pay
-  - To Receive
-  - History (Completed)
-  - Notification Settings
+- **Recurring Tasks**: Supports Daily, Weekly, and Monthly intervals with auto-generation.
+- **Color-Coded Status**: Neon pink and blue indicators for task priority and completion.
+- **Detailed Analytics**: Track payment history and task completion rates.
 
-### 5. History Page
+### 🔔 Smart Notifications
 
-- View all completed reminders that have been marked as "Received"
-- Data is stored and managed using Room for persistence
-
-### 6. Detailed Reminder View
-
-- Tap on any reminder card to view a detailed bottom sheet
-- Includes full information, an editable notes field, and options to mark as received or delete
-
-### 7. Daily Notification Reminders
-
-- Users can configure a preferred daily time for receiving reminders
-- Notifications are delivered once daily, even if the app is not running
-- Handled using WorkManager and NotificationChannel APIs
-
-### 8. Boot Persistence
-
-- Reminders are automatically re-scheduled after device reboot using a Boot BroadcastReceiver
+- **Daily Alerts**: Scheduled reminders delivered via WorkManager.
+- **Status Persistence**: Reminders are restored automatically after device reboot.
 
 ---
 
-## 📸 App Screenshots
+## 📸 Visual Identity
 
 <p align="center">
-  <img src="screenshots/1.png" width="250" style="margin: 50px;"/>
-  <img src="screenshots/2.png" width="250" style="margin: 50px;"/>
-  <img src="screenshots/4.png" width="250" style="margin: 50px;"/>
-  <img src="screenshots/3.png" width="250" style="margin: 50px;"/>
-  <img src="screenshots/5.png" width="250" style="margin: 50px;"/>
+  <img src="documentz/banner_1024x500.png" width="800" alt="App Banner"/>
+</p>
+
+<p align="center">
+  <img src="documentz/screenshot_1.png" width="200" style="margin: 10px;"/>
+  <img src="documentz/screenshot_2.png" width="200" style="margin: 10px;"/>
+  <img src="documentz/screenshot_3.png" width="200" style="margin: 10px;"/>
+  <img src="documentz/signup_screen_mockup.png" width="200" style="margin: 10px;"/>
 </p>
 ---
 
